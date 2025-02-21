@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { zeroish } from "../../../utils/zeroish";
-import { GhostButton } from "../../../components/button";
+import { GhostButton } from "../../../components/Button";
 import { CrownIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
 
 function Header() {
