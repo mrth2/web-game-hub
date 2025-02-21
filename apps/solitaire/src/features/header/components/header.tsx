@@ -1,24 +1,18 @@
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { zeroish } from "../../../utils/zeroish";
 import { GhostButton } from "../../../components/Button";
 import { CrownIcon, Volume2Icon, VolumeOffIcon } from "lucide-react";
+import { observer } from "mobx-react-lite";
+import { GameContext } from "../../../app/gameContext";
 
-function Header() {
-  const [time, setTime] = useState(0);
-  const [score] = useState(0);
-  const [moves] = useState(0);
+const Header = observer(() => {
+  const gameStore = useContext(GameContext);
   const [mute, setMute] = useState(false);
 
-  const hour = zeroish(Math.floor(time / 3600));
-  const minute = zeroish(Math.floor(time / 60));
-  const second = zeroish(time % 60);
+  const hour = zeroish(Math.floor(gameStore.timer / 3600));
+  const minute = zeroish(Math.floor(gameStore.timer / 60));
+  const second = zeroish(gameStore.timer % 60);
   const displayTime = hour + ":" + minute + ":" + second;
-
-  useEffect(() => {
-    setInterval(() => {
-      setTime((prevTime) => prevTime + 1);
-    }, 1000);
-  }, []);
 
   return (
     <div className="header bg-gray-700 flex justify-between items-center gap-5 p-4 h-20">
@@ -34,12 +28,12 @@ function Header() {
         {/* current score */}
         <p>
           <span className="text-gray-400 mr-2">Score:</span>
-          <span>{score}</span>
+          <span>{gameStore.score}</span>
         </p>
         {/* moves made */}
         <p>
           <span className="text-gray-400 mr-2">Moves:</span>
-          <span>{moves}</span>
+          <span>{gameStore.moves}</span>
         </p>
       </div>
       {/* actions */}
@@ -55,6 +49,6 @@ function Header() {
       </div>
     </div >
   );
-}
+});
 
 export default Header;
