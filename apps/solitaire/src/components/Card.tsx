@@ -27,14 +27,22 @@ const Card: React.FC<CardProps> = ({ card, flipped }) => {
       </div>
     );
   }
+
+  const CardImage = () => {
+    if (card.value === 1) return <div className="text-7xl font-extrabold">A</div>
+    if (card.value === 11) return <div className="text-7xl font-extrabold">J</div>
+    if (card.value === 12) return <div className="text-7xl font-extrabold">Q</div>
+    if (card.value === 13) return <div className="text-7xl font-extrabold">K</div>
+    return <CardIcon type={card.type} size="large" />
+  }
   return (
-    <div className={`card rounded-xl bg-white h-32 w-20 p-1 flex flex-col justify-between` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')}>
+    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')}>
       <div className="flex justify-between items-center">
         <span className="font-extrabold text-2xl">{card.value}</span>
         <CardIcon type={card.type} />
       </div>
       <div className="mb-2 mx-auto">
-        <CardIcon type={card.type} size="large" />
+        <CardImage />
       </div>
     </div>
   )
