@@ -1,9 +1,9 @@
 import React from "react";
-import type { Card } from "../types/card";
+import type { TCard } from "../types/card";
 import CardIcon from "./CardIcon";
 
 type CardProps = {
-  card: Card;
+  card: TCard;
   flipped?: boolean;
 }
 const Card: React.FC<CardProps> = ({ card, flipped }) => {
@@ -36,7 +36,7 @@ const Card: React.FC<CardProps> = ({ card, flipped }) => {
     return <CardIcon type={card.type} size="large" />
   }
   return (
-    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')}>
+    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')} draggable>
       <div className="flex justify-between items-center">
         <span className="font-extrabold text-2xl">{card.value}</span>
         <CardIcon type={card.type} />
