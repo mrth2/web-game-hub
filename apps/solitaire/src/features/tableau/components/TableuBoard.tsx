@@ -16,11 +16,11 @@ const TableuBoard = observer(() => {
 
   return (
     <div className="tableu p-8 mx-auto max-w-5xl grid grid-cols-7 gap-5">
-      {gameStore.tableuColumns.length && gameStore.tableuColumns.map((cards) => (
-        <div key={JSON.stringify(cards)} className="flex flex-col w-20">
-          {cards.map((card, cardIndex) => (
-            <div key={cardIndex} className="first:mt-0 -mt-24 cursor-move" onClick={() => onPickCard(card)}>
-              <Card card={card} flipped={cardIndex !== cards.length - 1} />
+      {gameStore.tableuColumns.length && gameStore.tableuColumns.map((cards, colIndex) => (
+        <div key={colIndex} className="flex flex-col w-20">
+          {cards.map((card) => (
+            <div key={card.type + card.value} className="first:mt-0 -mt-20 cursor-move" onClick={() => onPickCard(card)}>
+              <Card card={card} flipped={!card.revealed} />
             </div>
           ))}
         </div>

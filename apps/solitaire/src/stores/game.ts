@@ -9,7 +9,7 @@ const CARD_POOL = [
   ...Array.from({ length: 13 }, (_, i) => ({ type: "diamonds", value: i + 1 })),
   ...Array.from({ length: 13 }, (_, i) => ({ type: "clubs", value: i + 1 })),
   ...Array.from({ length: 13 }, (_, i) => ({ type: "spades", value: i + 1 })),
-] as Omit<TCard, "color">[];
+] as Omit<TCard, "color" | "revealed">[];
 
 const POINTS = {
   FOUNDATION: 15, // each time move a card to the foundation, get 15 points
@@ -87,6 +87,7 @@ export class GameStore {
       ...card,
       color:
         card.type === "hearts" || card.type === "diamonds" ? "red" : "black",
+      revealed: false, // by default, all cards are facing down
     }));
     // generate 7 columns, with column #1 having 1 card, column #2 having 2 cards, etc.
     let columnIndex = 0;
@@ -96,6 +97,7 @@ export class GameStore {
       }
       acc[columnIndex].push(card);
       if (acc[columnIndex].length - 1 === columnIndex) {
+        acc[columnIndex][acc[columnIndex].length - 1].revealed = true; // auto reveal the last card in the column
         columnIndex++;
       }
       return acc;

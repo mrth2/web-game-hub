@@ -20,7 +20,7 @@ const Card: React.FC<CardProps> = ({ card, flipped }) => {
     });
 
     return (
-      <div className="card bg-blue-500 border-6 border-white h-32 w-20 rounded-xl overflow-hidden">
+      <div className="card bg-blue-500 border-6 border-white h-28 w-20 rounded-xl overflow-hidden">
         <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
           {grids}
         </div>
