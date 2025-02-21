@@ -1,25 +1,23 @@
 import Card from "../../../components/Card";
-import _sample from 'lodash/sample';
-import type { CardType } from "../../../types/card";
-import React from "react";
+import type { TCard } from "../../../types/card";
+import { useContext } from "react";
+import { GameContext } from "../../../app/gameContext";
+import { observer } from "mobx-react-lite";
 
-const TableuBoard: React.FC = () => {
-  const types: CardType[] = ['spades', 'hearts', 'diamonds', 'clubs'];
-  // generate 7 columms, with column #1 having 1 card, column #2 having 2 cards, etc.
-  const columns = [1, 2, 3, 4, 5, 6, 7].map((i) => ({
-    cards: Array(i).fill({
-      type: _sample(types) as CardType,
-      value: _sample([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
-    })
-  }));
-  console.log(columns);
+const TableuBoard = observer(() => {
+  const gameStore = useContext(GameContext);
+
+  const onPickCard = (card: TCard) => {
+    // place the card in the foundation
+    gameStore.moveCardToFoundation(card);
+  };
 
   return (
     <div className="tableu p-8 mx-auto max-w-5xl grid grid-cols-7 gap-5">
-      {columns.map((column) => (
-        <div className="flex flex-col w-20">
+      {gameStore.tableuColumns.map((column) => (
+        <div key={JSON.stringify(column)} className="flex flex-col w-20">
           {column.cards.map((card, cardIndex) => (
-            <div className="first:mt-0 -mt-24">
+            <div key={cardIndex} className="first:mt-0 -mt-24 cursor-move" onClick={() => onPickCard(card)}>
               <Card card={card} flipped={cardIndex !== column.cards.length - 1} />
             </div>
           ))}
@@ -27,6 +25,6 @@ const TableuBoard: React.FC = () => {
       ))}
     </div>
   )
-}
+})
 
 export default TableuBoard;

@@ -27,6 +27,19 @@ export class FoundationStore {
   }
 
   placeCard(card: TCard) {
+    if (card.type !== this.type) {
+      throw new Error(`Invalid card type: ${card.type}`);
+    }
+    if (
+      this.topCard &&
+      this.topCard.value !== 13 &&
+      this.topCard.value + 1 !== card.value
+    ) {
+      throw new Error(`Invalid card value: ${card.value}`);
+    }
+    if (!this.topCard && card.value !== 1) {
+      throw new Error(`Invalid card value: ${card.value}`);
+    }
     this.cards.push(card);
   }
 

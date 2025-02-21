@@ -1,4 +1,4 @@
-import { Card, Foundation, Stock, Tableau, Waste } from "./card";
+import { TCard, Foundation, Stock, Tableau, Waste } from "./card";
 
 export type Game = {
   tableau: Tableau;
@@ -9,6 +9,6 @@ export type Game = {
 export type Move = {
   from: "tableau" | "waste" | "stock";
   to: "tableau" | "foundation" | "waste" | "stock";
-  card: Card;
+  card: TCard;
 };
 export type GameState = "playing" | "won" | "lost";
