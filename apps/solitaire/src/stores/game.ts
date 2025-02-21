@@ -31,7 +31,7 @@ export class GameStore {
   // all the cards of the game
   cards: TCard[] = [];
   // init cards for 7 colums, with column #1 having 1 card, column #2 having 2 cards, etc.
-  cardsInPlay: TCard[] = [];
+  tableuColumns: TCard[][] = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -45,21 +45,8 @@ export class GameStore {
     this.startTimer();
   }
 
-  get tableuColumns() {
-    let columnIndex = 1;
-    return this.cardsInPlay.reduce(
-      (acc, card) => {
-        if (!acc[columnIndex]) {
-          acc[columnIndex] = { cards: [] };
-        }
-        acc[columnIndex].cards.push(card);
-        if (acc[columnIndex].cards.length === columnIndex) {
-          columnIndex++;
-        }
-        return acc;
-      },
-      [] as { cards: TCard[] }[]
-    );
+  get cardsInPlay() {
+    return this.tableuColumns.flat();
   }
 
   get cardInStock() {
@@ -98,7 +85,17 @@ export class GameStore {
   shuffleCards() {
     this.cards = _shuffle(CARD_POOL);
     // generate 7 columns, with column #1 having 1 card, column #2 having 2 cards, etc.
-    this.cardsInPlay = this.cards.slice(0, 28);
+    let columnIndex = 0;
+    this.tableuColumns = this.cards.slice(0, 28).reduce((acc, card) => {
+      if (!acc[columnIndex]) {
+        acc[columnIndex] = [];
+      }
+      acc[columnIndex].push(card);
+      if (acc[columnIndex].length - 1 === columnIndex) {
+        columnIndex++;
+      }
+      return acc;
+    }, [] as TCard[][]);
   }
   undoLastMove() {
     // undo the last move
@@ -121,9 +118,14 @@ export class GameStore {
           this.spadeFoundation.placeCard(card);
           break;
       }
-      // move card from `cardsInPlay` to the foundation
-      const cardIndex = this.cardsInPlay.findIndex((c) => c === card);
-      this.cardsInPlay.splice(cardIndex, 1);
+      // move card from the column in tableu to the foundation
+      const colIndex = this.tableuColumns.findIndex((col) =>
+        col.includes(card)
+      );
+      const cardIndex = this.tableuColumns[colIndex].findIndex(
+        (c) => c === card
+      );
+      this.tableuColumns[colIndex].splice(cardIndex, 1);
       this.incrementMoves();
       this.addScore(POINTS.FOUNDATION);
     } catch (e: any) {
