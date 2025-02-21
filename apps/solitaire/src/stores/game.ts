@@ -4,12 +4,12 @@ import { TCard } from "../types/card";
 import _cloneDeep from "lodash/cloneDeep";
 import _shuffle from "lodash/shuffle";
 
-const CARD_POOL: TCard[] = [
+const CARD_POOL = [
   ...Array.from({ length: 13 }, (_, i) => ({ type: "hearts", value: i + 1 })),
   ...Array.from({ length: 13 }, (_, i) => ({ type: "diamonds", value: i + 1 })),
   ...Array.from({ length: 13 }, (_, i) => ({ type: "clubs", value: i + 1 })),
   ...Array.from({ length: 13 }, (_, i) => ({ type: "spades", value: i + 1 })),
-] as TCard[];
+] as Omit<TCard, "color">[];
 
 const POINTS = {
   FOUNDATION: 15, // each time move a card to the foundation, get 15 points
@@ -83,7 +83,11 @@ export class GameStore {
     }, 1000);
   }
   shuffleCards() {
-    this.cards = _shuffle(CARD_POOL);
+    this.cards = _shuffle(CARD_POOL).map((card) => ({
+      ...card,
+      color:
+        card.type === "hearts" || card.type === "diamonds" ? "red" : "black",
+    }));
     // generate 7 columns, with column #1 having 1 card, column #2 having 2 cards, etc.
     let columnIndex = 0;
     this.tableuColumns = this.cards.slice(0, 28).reduce((acc, card) => {
@@ -128,8 +132,29 @@ export class GameStore {
       this.tableuColumns[colIndex].splice(cardIndex, 1);
       this.incrementMoves();
       this.addScore(POINTS.FOUNDATION);
+      return true; // successfully moved the card to the foundation
     } catch (e: any) {
       console.error(e.message);
+      return false; // can't move the card to the foundation
+    }
+  }
+  // given a card, try to find any column with last card:
+  // - having different color
+  // - having the value one less than the card
+  // if found, move the card to the new column
+  autoMoveCardInTableu(card: TCard) {
+    const colIndex = this.tableuColumns.findIndex((cards) =>
+      cards.some((c) => c.color === card.color && c.value === card.value + 1)
+    );
+    if (colIndex !== -1) {
+      // move the card to the new column
+      this.tableuColumns[colIndex].push(card);
+      // remove the card from the old column
+      const cardIndex = this.tableuColumns.findIndex((cards) =>
+        cards.includes(card)
+      );
+      this.tableuColumns[cardIndex].splice(cardIndex, 1);
+      this.incrementMoves();
     }
   }
 

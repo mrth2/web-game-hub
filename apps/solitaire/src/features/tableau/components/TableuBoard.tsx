@@ -8,8 +8,10 @@ const TableuBoard = observer(() => {
   const gameStore = useContext(GameContext);
 
   const onPickCard = (card: TCard) => {
-    // place the card in the foundation
-    gameStore.moveCardToFoundation(card);
+    // try to place the card in the foundation
+    gameStore.moveCardToFoundation(card) ||
+      // if the card is not placed in the foundation, try move the card in the tableu
+      gameStore.autoMoveCardInTableu(card);
   };
 
   return (
