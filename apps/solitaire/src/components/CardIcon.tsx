@@ -1,13 +1,23 @@
 import { ClubIcon, DiamondIcon, HeartIcon, SpadeIcon } from "lucide-react";
-import type { CardType } from "../types/card";
+import type { TCardType } from "../types/card";
 
 
 type CardIconProps = {
-  type: CardType;
-  size?: 'default' | 'large';
+  type: TCardType;
+  size?: 'small' | 'large' | 'medium';
 }
 function CardIcon(props: CardIconProps) {
-  const size = props.size === 'large' ? 64 : 24;
+  let size: number;
+  switch (props.size) {
+    case 'large':
+      size = 64;
+      break;
+    case 'medium':
+      size = 56;
+      break;
+    default: // small
+      size = 24;
+  }
   switch (props.type) {
     case 'hearts':
       return <HeartIcon size={size} className="text-red-600 fill-red-600" />;
