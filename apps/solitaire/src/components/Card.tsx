@@ -4,6 +4,7 @@ import CardIcon from "./CardIcon";
 import Jack from "@/assets/jack.png";
 import Queen from "@/assets/queen.svg?react";
 import King from "@/assets/king.svg?react";
+import Ace from "@/assets/ace.svg?react";
 
 type CardProps = {
   card: TCard;
@@ -45,6 +46,7 @@ const Card: React.FC<CardProps> = ({ card, flipped, draggable }) => {
   }
 
   const CardImage = () => {
+    if (card.value === 1) return <Ace width={90} height={85} />
     if (card.value === 11) return <img src={Jack} className="scale-110" />
     if (card.value === 12) return <Queen width={90} height={90} />
     if (card.value === 13) return <King width={90} height={90} />
