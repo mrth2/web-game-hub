@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { GameContext } from "../../../app/gameContext";
 import Card from "../../../components/Card";
 import { TCard } from "../../../types/card";
@@ -12,6 +12,7 @@ const StockPile = observer(() => {
 
   const [stockCards, setStockCards] = useState(gameStore.cardsInStock);
   const [openingCards, setOpeningCards] = useState<TCard[]>([]);
+  const lastThreeOpeningCards = openingCards.slice(-3);
 
   const openCard = useCallback((card: TCard) => {
     if (stockCards.length > 0) {
@@ -46,15 +47,15 @@ const StockPile = observer(() => {
         )}
         {stockCards.length > 0 && stockCards.map(card => (
           <div className="first:mt-0 -mt-28 translate-y-0.5 cursor-pointer" key={card.type + card.value} onClick={() => openCard(card)}>
-            <Card card={card} flipped />
+            <Card card={card} flipped draggable={false} />
           </div>
         ))}
       </div>
       <div className="flex flex-col justify-center px-5 py-2">
         {/* show last 3 cards */}
-        {openingCards.length > 0 && openingCards.slice(-3).map(card => (
+        {openingCards.length > 0 && lastThreeOpeningCards.map((card, cardIndex) => (
           <div className="first:mt-0 -mt-20 cursor-move" key={card.type + card.value} onClick={() => pickOpeningCard(card)}>
-            <Card card={card} flipped={false} />
+            <Card card={card} flipped={false} draggable={cardIndex === lastThreeOpeningCards.length - 1} />
           </div>
         ))}
       </div>

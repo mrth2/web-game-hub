@@ -12,7 +12,7 @@ const TableuBoard = observer(() => {
         <div key={colIndex} className="flex flex-col w-20">
           {cards.map((card) => (
             <div key={card.type + card.value} className="first:mt-0 -mt-20 cursor-move" onClick={() => gameStore.autoPickCard(card)}>
-              <Card card={card} flipped={!card.revealed} />
+              <Card card={card} flipped={!card.revealed} draggable={card.revealed} />
             </div>
           ))}
         </div>
