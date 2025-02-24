@@ -111,12 +111,15 @@ export class GameStore {
   autoPickCard(card: TCard, from: "tableu" | "stock" = "tableu") {
     return (
       // try to place the card in the foundation
-      this.moveCardToFoundation(card) ||
+      this.moveCardToFoundation(card, from) ||
       // if the card is not placed in the foundation, try move the card in the tableu
       this.autoMoveCardInTableu(card, from)
     );
   }
-  moveCardToFoundation(card: TCard) {
+  moveCardToFoundation(
+    card: TCard,
+    from: "tableu" | "stock" = "tableu"
+  ): boolean {
     try {
       switch (card.type) {
         case "hearts":
@@ -132,14 +135,21 @@ export class GameStore {
           this.spadeFoundation.placeCard(card);
           break;
       }
+      console.log(from);
       // move card from the column in tableu to the foundation
-      const colIndex = this.tableuColumns.findIndex((col) =>
-        col.includes(card)
-      );
-      const cardIndex = this.tableuColumns[colIndex].findIndex(
-        (c) => c === card
-      );
-      this.tableuColumns[colIndex].splice(cardIndex, 1);
+      if (from === "tableu") {
+        const colIndex = this.tableuColumns.findIndex((col) =>
+          col.includes(card)
+        );
+        const cardIndex = this.tableuColumns[colIndex].findIndex(
+          (c) => c === card
+        );
+        this.tableuColumns[colIndex].splice(cardIndex, 1);
+        if (this.tableuColumns[colIndex].length > 0)
+          this.tableuColumns[colIndex][
+            this.tableuColumns[colIndex].length - 1
+          ].revealed = true; // auto reveal the last card in the column
+      }
       this.incrementMoves();
       this.addScore(POINTS.FOUNDATION);
       return true; // successfully moved the card to the foundation
@@ -152,7 +162,10 @@ export class GameStore {
   // - having different color
   // - having the value one less than the card
   // if found, move the card to the new column
-  autoMoveCardInTableu(card: TCard, from: "tableu" | "stock" = "tableu") {
+  autoMoveCardInTableu(
+    card: TCard,
+    from: "tableu" | "stock" = "tableu"
+  ): boolean {
     const colIndex = this.tableuColumns.findIndex(
       (cards) =>
         cards[cards.length - 1].color !== card.color &&
