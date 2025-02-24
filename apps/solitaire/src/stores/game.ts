@@ -49,8 +49,8 @@ export class GameStore {
     return this.tableuColumns.flat();
   }
 
-  get cardInStock() {
-    return this.cards.find((card) => {
+  get cardsInStock() {
+    return this.cards.filter((card) => {
       return (
         !this.heartFoundation.cards.includes(card) &&
         !this.diamondFoundation.cards.includes(card) &&
@@ -108,6 +108,14 @@ export class GameStore {
     // TODO: implement this with a history list
     this.decrementMoves();
   }
+  autoPickCard(card: TCard) {
+    return (
+      // try to place the card in the foundation
+      this.moveCardToFoundation(card) ||
+      // if the card is not placed in the foundation, try move the card in the tableu
+      this.autoMoveCardInTableu(card)
+    );
+  }
   moveCardToFoundation(card: TCard) {
     try {
       switch (card.type) {
@@ -145,8 +153,10 @@ export class GameStore {
   // - having the value one less than the card
   // if found, move the card to the new column
   autoMoveCardInTableu(card: TCard) {
-    const colIndex = this.tableuColumns.findIndex((cards) =>
-      cards.some((c) => c.color === card.color && c.value === card.value + 1)
+    const colIndex = this.tableuColumns.findIndex(
+      (cards) =>
+        cards[cards.length - 1].color !== card.color &&
+        cards[cards.length - 1].value === card.value + 1
     );
     if (colIndex !== -1) {
       // move the card to the new column
@@ -157,10 +167,15 @@ export class GameStore {
       );
       this.tableuColumns[cardIndex].splice(cardIndex, 1);
       this.incrementMoves();
+      return true; // successfully moved the card to the new column
     }
+    return false;
   }
 
   // manipulate the scores
+  resetScore() {
+    this.score = 0;
+  }
   addScore(points: number) {
     this.score += points;
   }

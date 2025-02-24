@@ -46,7 +46,7 @@ const Card: React.FC<CardProps> = ({ card, flipped }) => {
     return <CardIcon type={card.type} size="large" />
   }
   return (
-    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')} draggable>
+    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between shadow shadow-gray-400` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')} draggable>
       <div className="flex justify-between items-center">
         <CardValue />
         <CardIcon type={card.type} />
