@@ -1,6 +1,9 @@
 import React from "react";
 import type { TCard } from "../types/card";
 import CardIcon from "./CardIcon";
+import Jack from "@/assets/jack.png";
+import Queen from "@/assets/queen.svg?react";
+import King from "@/assets/king.svg?react";
 
 type CardProps = {
   card: TCard;
@@ -42,9 +45,9 @@ const Card: React.FC<CardProps> = ({ card, flipped, draggable }) => {
   }
 
   const CardImage = () => {
-    if (card.value === 11) return <div className="text-7xl font-extrabold">J</div>
-    if (card.value === 12) return <div className="text-7xl font-extrabold">Q</div>
-    if (card.value === 13) return <div className="text-7xl font-extrabold">K</div>
+    if (card.value === 11) return <img src={Jack} className="scale-110" />
+    if (card.value === 12) return <Queen width={90} height={90} />
+    if (card.value === 13) return <King width={90} height={90} />
     return <CardIcon type={card.type} size="large" />
   }
   return (
