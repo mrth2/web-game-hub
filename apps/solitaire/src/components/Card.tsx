@@ -47,13 +47,13 @@ const Card: React.FC<CardProps> = ({ card, flipped, draggable }) => {
 
   const CardImage = () => {
     if (card.value === 1) return <Ace width={90} height={85} />
-    if (card.value === 11) return <img src={Jack} className="scale-110" />
+    if (card.value === 11) return <img src={Jack} className="max-w-none -ml-1" width={80} height={80} />
     if (card.value === 12) return <Queen width={90} height={90} />
     if (card.value === 13) return <King width={90} height={90} />
     return <CardIcon type={card.type} size="large" />
   }
   return (
-    <div className={`card rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between shadow shadow-gray-400` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')} draggable={canDrag}>
+    <div className={`card z-10 rounded-xl bg-white h-28 w-20 p-1 flex flex-col justify-between shadow shadow-gray-400` + (card.type === 'hearts' || card.type === 'diamonds' ? ' text-red-600' : ' text-stone-700')} draggable={canDrag}>
       <div className="flex justify-between items-center">
         <CardValue />
         <CardIcon type={card.type} />
