@@ -166,11 +166,15 @@ export class GameStore {
     card: TCard,
     from: "tableu" | "stock" = "tableu"
   ): boolean {
-    const colIndex = this.tableuColumns.findIndex(
-      (cards) =>
+    const colIndex = this.tableuColumns.findIndex((cards) => {
+      if (cards.length === 0) {
+        return card.value === 13; // if the column is empty, only King can be placed
+      }
+      return (
         cards[cards.length - 1].color !== card.color &&
         cards[cards.length - 1].value === card.value + 1
-    );
+      );
+    });
     if (colIndex !== -1) {
       card.revealed = true; // auto reveal the card
       if (from === "stock") {
