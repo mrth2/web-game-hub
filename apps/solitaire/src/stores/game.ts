@@ -108,12 +108,12 @@ export class GameStore {
     // TODO: implement this with a history list
     this.decrementMoves();
   }
-  autoPickCard(card: TCard) {
+  autoPickCard(card: TCard, from: "tableu" | "stock" = "tableu") {
     return (
       // try to place the card in the foundation
       this.moveCardToFoundation(card) ||
       // if the card is not placed in the foundation, try move the card in the tableu
-      this.autoMoveCardInTableu(card)
+      this.autoMoveCardInTableu(card, from)
     );
   }
   moveCardToFoundation(card: TCard) {
@@ -152,20 +152,29 @@ export class GameStore {
   // - having different color
   // - having the value one less than the card
   // if found, move the card to the new column
-  autoMoveCardInTableu(card: TCard) {
+  autoMoveCardInTableu(card: TCard, from: "tableu" | "stock" = "tableu") {
     const colIndex = this.tableuColumns.findIndex(
       (cards) =>
         cards[cards.length - 1].color !== card.color &&
         cards[cards.length - 1].value === card.value + 1
     );
     if (colIndex !== -1) {
+      card.revealed = true; // auto reveal the card
       // move the card to the new column
       this.tableuColumns[colIndex].push(card);
-      // remove the card from the old column
-      const cardIndex = this.tableuColumns.findIndex((cards) =>
-        cards.includes(card)
-      );
-      this.tableuColumns[cardIndex].splice(cardIndex, 1);
+      if (from === "stock") {
+        this.addScore(POINTS.REVEAL); // add points for move stock into tableu
+      }
+      // if the card is from the tableu, remove the card from the old column
+      else {
+        // remove the card from the old column
+        const cardIndex = this.tableuColumns.findIndex((cards) =>
+          cards.includes(card)
+        );
+        if (cardIndex !== -1) {
+          this.tableuColumns[cardIndex].splice(cardIndex, 1);
+        }
+      }
       this.incrementMoves();
       return true; // successfully moved the card to the new column
     }

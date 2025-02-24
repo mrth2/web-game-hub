@@ -29,7 +29,7 @@ const StockPile = observer(() => {
   }, [gameStore.cardsInStock]);
 
   const pickOpeningCard = useCallback((card: TCard) => {
-    if (gameStore.autoPickCard(card)) {
+    if (gameStore.autoPickCard(card, 'stock')) {
       setOpeningCards((prev) => prev.filter((c) => c !== card)); // remove from opening list
     }
   }, [openingCards]);
