@@ -135,7 +135,6 @@ export class GameStore {
           this.spadeFoundation.placeCard(card);
           break;
       }
-      console.log(from);
       // move card from the column in tableu to the foundation
       if (from === "tableu") {
         const colIndex = this.tableuColumns.findIndex((col) =>
@@ -145,10 +144,11 @@ export class GameStore {
           (c) => c === card
         );
         this.tableuColumns[colIndex].splice(cardIndex, 1);
-        if (this.tableuColumns[colIndex].length > 0)
-          this.tableuColumns[colIndex][
-            this.tableuColumns[colIndex].length - 1
-          ].revealed = true; // auto reveal the last card in the column
+        const lastCard =
+          this.tableuColumns[colIndex][this.tableuColumns[colIndex].length - 1];
+        if (lastCard && !lastCard.revealed) {
+          lastCard.revealed = true; // auto reveal the last card in the column
+        }
       }
       this.incrementMoves();
       this.addScore(POINTS.FOUNDATION);
@@ -173,8 +173,6 @@ export class GameStore {
     );
     if (colIndex !== -1) {
       card.revealed = true; // auto reveal the card
-      // move the card to the new column
-      this.tableuColumns[colIndex].push(card);
       if (from === "stock") {
         this.addScore(POINTS.REVEAL); // add points for move stock into tableu
       }
@@ -186,8 +184,19 @@ export class GameStore {
         );
         if (cardIndex !== -1) {
           this.tableuColumns[cardIndex].splice(cardIndex, 1);
+          const lastCard =
+            this.tableuColumns[cardIndex][
+              this.tableuColumns[cardIndex].length - 1
+            ];
+          // auto reveal the last card in the column if not
+          if (lastCard && !lastCard.revealed) {
+            lastCard.revealed = true;
+            this.addScore(POINTS.REVEAL); // add points for reveal a card in the tableu
+          }
         }
       }
+      // move the card to the new column
+      this.tableuColumns[colIndex].push(card);
       this.incrementMoves();
       return true; // successfully moved the card to the new column
     }
