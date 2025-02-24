@@ -1,11 +1,12 @@
 import { createContext, FC, ReactNode } from "react"
 import { GameStore } from "../stores/game"
 
-export const GameContext = createContext<GameStore>({} as GameStore);
+const gameStore = new GameStore();
+export const GameContext = createContext<GameStore>(gameStore);
 
 const GameProvider: FC<{ children: ReactNode }> = ({ children }) => {
   return (
-    <GameContext.Provider value={new GameStore()}>
+    <GameContext.Provider value={gameStore}>
       {children}
     </GameContext.Provider>
   )
