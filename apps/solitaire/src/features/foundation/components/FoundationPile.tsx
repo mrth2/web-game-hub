@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite";
 import Card from "../../../components/Card";
 import CardIcon from "../../../components/CardIcon";
 import { FoundationStore } from "../../../stores/foundation";
+import { useContext } from "react";
+import { GameContext } from "../../../app/gameContext";
 
 type FoundationPileProps = {
   foundation: FoundationStore;
@@ -14,9 +16,17 @@ const FoundationPile = observer(({ foundation }: FoundationPileProps) => {
       </div>
     )
   }
+  const gameStore = useContext(GameContext);
+  const restoreCardFromFoundation = () => {
+    const card = foundation.pickTopCard();
+    if (!card) return;
+    gameStore.autoMoveCardInTableu(card);
+  }
   // display only the last card
   return (
-    <Card card={foundation.topCard} />
+    <div onClick={restoreCardFromFoundation}>
+      <Card card={foundation.topCard} />
+    </div>
   )
 });
 
